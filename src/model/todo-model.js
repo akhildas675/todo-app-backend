@@ -8,9 +8,16 @@ const todoSchema = new mongoose.Schema({
 
     },
 
-    isCompleted:{
-        type:Boolean,
-        required:false
+
+    description:{
+        type:String,
+        required:true
+    },
+
+    status:{
+        type:String,
+        enum:["pending","completed"],
+        default:"pending"
     },
 
     user:{
@@ -18,6 +25,8 @@ const todoSchema = new mongoose.Schema({
         ref:'User',
         required:true,
     },
+
+
     
 
 },{timestamps:true})

@@ -2,9 +2,10 @@ import express from 'express';
 
 import connectDB from './src/config/connectDB.js';
 import cors from 'cors'
-import userRoute from './src/routes/userRoutes.js';
 
 import dotenv from "dotenv"
+import todoRoute from './src/routes/todoRoutes.js';
+import userRoute from './src/routes/userRoutes.js';
 
 const app=express()
 const port=process.env.PORT || 4000;
@@ -24,7 +25,7 @@ app.get("/",(req,res)=>{
 app.use(cors())
 
 app.use('/users',userRoute)
-// app.use('/todo',todoRoute)
+app.use('/todos',todoRoute)
 
 
 app.listen(port,()=>{
