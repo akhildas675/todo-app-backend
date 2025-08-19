@@ -96,4 +96,38 @@ const userLogin = async (req, res) => {
   }
 };
 
-export { userRegister, userLogin };
+
+
+const getUsers = async(req,res)=>{
+  try {
+
+    const users = await User.find({},"name")
+    res.status(200).json(users)
+    
+  } catch (error) {
+    console.log("users get error",error)
+  }
+}
+
+
+
+const getUserTasks = async(req,res)=>{
+  try {
+
+    const {userId}=req.body
+
+    console.log(userId,'got user id from getUsers Task')
+    
+  } catch (error) {
+    console.log(error,"get users task error")
+  }
+}
+
+
+
+
+
+
+
+
+export { userRegister, userLogin, getUsers,getUserTasks };

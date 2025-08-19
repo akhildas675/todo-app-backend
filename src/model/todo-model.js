@@ -26,6 +26,22 @@ const todoSchema = new mongoose.Schema({
         required:true,
     },
 
+    assignedBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    
+    },
+
+    assignedTo:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        
+    },
+     createdAt:{ 
+        type: Date,
+        default: Date.now
+     },
+
 
     
 
