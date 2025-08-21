@@ -1,17 +1,15 @@
 import mongoose from "mongoose";
 
-
 const todoSchema = new mongoose.Schema({
     task:{
         type:String,
         required:true,
-
     },
-
 
     description:{
         type:String,
-        required:true
+        required:false,  
+        default: ""     
     },
 
     status:{
@@ -29,28 +27,18 @@ const todoSchema = new mongoose.Schema({
     assignedBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
-    
     },
 
     assignedTo:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
-        
     },
      createdAt:{ 
         type: Date,
         default: Date.now
      },
 
-
-    
-
 },{timestamps:true})
 
-
-
 const Todo = mongoose.model('Todo',todoSchema)
-
 export default Todo
-
-

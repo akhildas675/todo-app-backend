@@ -40,8 +40,13 @@ const addTodos = async (req, res) => {
       description: description ? description.trim() : "",
     });
 
-    console.log("New todo created:", newTodo);
-    res.status(201).json(newTodo);
+ 
+    const populatedTodo = await Todo.findById(newTodo._id)
+      .populate('assignedTo', 'name email')
+      .populate('assignedBy', 'name email');
+
+    console.log("New todo created:", populatedTodo);
+    res.status(201).json(populatedTodo);
   } catch (error) {
     console.error("Add todo error:", error);
     res.status(500).json({ msg: error.message });
@@ -65,7 +70,8 @@ const editTodos = async (req, res) => {
       return res.status(404).json({ msg: "Todo not found" });
     }
 
-    if (todo.user.toString() !== req.user.id) {
+
+    if (todo.user.toString() !== req.user.id && todo.assignedTo?.toString() !== req.user.id) {
       return res.status(403).json({ msg: "Not authorized to edit this todo" });
     }
 
@@ -73,7 +79,8 @@ const editTodos = async (req, res) => {
       new: true,
       runValidators: true 
     }).populate('assignedTo', 'name email')
-     .populate('assignedBy', 'name email');
+     .populate('assignedBy', 'name email')
+     .populate('user', 'name email');
     
     res.json(updatedTodo);
   } catch (error) {
@@ -98,6 +105,7 @@ const deleteTodos = async (req, res) => {
     if (!todo) {
       return res.status(404).json({ msg: "Todo not found" });
     }
+
 
     if (todo.user.toString() !== req.user.id) {
       return res.status(403).json({ msg: "Not authorized to delete this todo" });
@@ -133,6 +141,7 @@ const assignTask = async (req, res) => {
       return res.status(404).json({ msg: "Todo not found" });
     }
 
+   
     if (todo.user.toString() !== req.user.id) {
       return res.status(403).json({ msg: "Not authorized to assign this todo" });
     }
@@ -148,16 +157,12 @@ const assignTask = async (req, res) => {
      .populate('assignedBy', 'name email')
      .populate('user', 'name email');
 
-    res.json({
-      msg: "Task assigned successfully",
-      todo: updatedTodo
-    });
+    res.json(updatedTodo); 
   } catch (error) {
     console.error("Assign task error:", error);
     res.status(500).json({ msg: error.message });
   }
 };
-
 
 const getDashboard = async (req, res) => {
   try {
@@ -180,7 +185,7 @@ const getDashboard = async (req, res) => {
 
     console.log("Tasks assigned by me:", assignedByMe.length);
 
-   
+  
     const assignedToMe = await Todo.find({ 
       assignedTo: userId 
     })
@@ -191,13 +196,13 @@ const getDashboard = async (req, res) => {
 
     console.log("Tasks assigned to me:", assignedToMe.length);
 
- 
-    if (assignedByMe.length > 0) {
-      console.log("Sample assignedByMe task:", JSON.stringify(assignedByMe[0], null, 2));
-    }
-    if (assignedToMe.length > 0) {
-      console.log("Sample assignedToMe task:", JSON.stringify(assignedToMe[0], null, 2));
-    }
+   
+    // if (assignedByMe.length > 0) {
+    //   console.log("Sample assignedByMe task:", JSON.stringify(assignedByMe[0], null, 2));
+    // }
+    // if (assignedToMe.length > 0) {
+    //   console.log("Sample assignedToMe task:", JSON.stringify(assignedToMe[0], null, 2));
+    // }
 
     const response = {
       assignedByMe,
